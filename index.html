@@ -1,0 +1,198 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mizan</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+</head>
+
+<body class="min-h-screen bg-stone-50 text-gray-900">
+
+    
+    <header class="bg-emerald-950 text-white">
+        <div class="max-w-6xl mx-auto px-6 py-6 flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-amber-400">Mizan</h1>
+                <p class="text-sm text-gray-300">Cours des métaux précieux</p>
+            </div>
+
+            <button id="refresh-button"
+                class="bg-amber-400 text-emerald-950 px-4 py-2 rounded-lg font-semibold">
+                Actualiser
+            </button>
+        </div>
+    </header>
+
+
+    <main class="max-w-6xl mx-auto px-6 py-10 space-y-12">
+
+        
+        <section>
+            <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold">Cours des métaux</h2>
+                    <p class="text-gray-500 text-sm">
+                        Les prix actuels de l'or et de l'argent
+                    </p>
+                </div>
+
+                <select id="currency-select"
+                    class="border rounded-lg p-2 bg-white">
+                    <option value="MAD">MAD</option>
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                </select>
+            </div>
+
+            <p id="last-updated" class="text-sm text-gray-500 mb-4">
+                Dernière mise à jour : en attente
+            </p>
+
+            <p id="prices-status" role="status" aria-live="polite"
+                class="text-gray-600 mb-4">
+                Chargement des cours...
+            </p>
+
+            <button id="retry-button" hidden
+                class="mb-4 bg-emerald-900 text-white px-4 py-2 rounded-lg">
+                Réessayer
+            </button>
+
+            <!-- JavaScript will generate the price cards here -->
+            <div id="prices-container"
+                class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            </div>
+        </section>
+
+
+        <!-- PRICE HISTORY -->
+        <section class="bg-white rounded-2xl shadow-sm p-6">
+            <h2 class="text-2xl font-bold mb-2">Historique des prix</h2>
+
+            <p class="text-gray-500 mb-6">
+                Consultez l'évolution des cours.
+            </p>
+
+            <div class="flex flex-wrap gap-4 mb-6">
+
+                <select id="history-metal" class="border rounded-lg p-2">
+                    <option value="gold">Or</option>
+                    <option value="silver">Argent</option>
+                </select>
+
+                <select id="history-period" class="border rounded-lg p-2">
+                    <option value="7">7 derniers jours</option>
+                    <option value="30">30 derniers jours</option>
+                </select>
+
+                <button id="history-button"
+                    class="bg-emerald-900 text-white px-5 py-2 rounded-lg">
+                    Voir l'historique
+                </button>
+
+            </div>
+
+            <p id="history-status" role="status" aria-live="polite">
+                Sélectionnez une période.
+            </p>
+
+            <!-- JavaScript will generate the chart here -->
+            <div id="history-chart" class="mt-6"></div>
+        </section>
+
+
+        <!-- JEWELRY ESTIMATOR -->
+        <section class="bg-emerald-950 text-white rounded-2xl p-8">
+            <h2 class="text-2xl font-bold text-amber-400 mb-2">
+                Estimateur de bijou
+            </h2>
+
+            <p class="text-gray-300 mb-6">
+                Estimez la valeur d'un bijou selon son poids.
+            </p>
+
+            <form id="estimator-form" class="space-y-5">
+
+                <div>
+                    <label for="weight-input" class="block mb-2">
+                        Poids en grammes
+                    </label>
+
+                    <input
+                        type="number"
+                        id="weight-input"
+                        min="0"
+                        step="any"
+                        placeholder="Ex. 10"
+                        class="w-full p-3 rounded-lg text-gray-900 bg-white"
+                    >
+
+                    <p id="weight-error" role="alert"
+                        class="text-red-300 text-sm mt-2"></p>
+                </div>
+
+                <div>
+                    <label for="estimator-metal" class="block mb-2">
+                        Choisir le métal
+                    </label>
+
+                    <select id="estimator-metal"
+                        class="w-full p-3 rounded-lg text-gray-900 bg-white">
+                        <option value="gold">Or</option>
+                        <option value="silver">Argent</option>
+                    </select>
+                </div>
+
+                <button type="submit"
+                    class="bg-amber-400 text-emerald-950 font-bold px-6 py-3 rounded-lg">
+                    Calculer la valeur
+                </button>
+
+                <p id="estimate-result" aria-live="polite"
+                    class="text-xl font-bold"></p>
+
+            </form>
+        </section>
+
+
+        <!-- REQUEST JOURNAL -->
+        <section class="bg-white rounded-2xl shadow-sm p-6">
+
+            <details>
+                <summary class="font-bold cursor-pointer text-lg">
+                    Journal des requêtes (Debug)
+                </summary>
+
+                <div class="overflow-x-auto mt-4">
+                    <table class="w-full text-sm text-left">
+                        <thead>
+                            <tr class="border-b">
+                                <th class="p-3">Méthode</th>
+                                <th class="p-3">URL</th>
+                                <th class="p-3">Statut</th>
+                                <th class="p-3">Durée</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="request-log-body">
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+
+        </section>
+
+    </main>
+
+
+    <footer class="bg-emerald-950 text-gray-300 text-center p-5">
+        <p>Mizan &copy; 2026 / Bijouterie Al Andalous</p>
+    </footer>
+
+    <script type="module" src="./src/js/main.js"></script>
+
+</body>
+</html>
